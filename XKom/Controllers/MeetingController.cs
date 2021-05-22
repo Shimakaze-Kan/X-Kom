@@ -24,7 +24,7 @@ namespace XKom.Controllers
         }
 
         [HttpPost("SignUpParticipant")]
-        public async Task<ActionResult<MessageResponseDto>> SignUpParticipant(UserDto user)
+        public async Task<ActionResult<MessageResponseDto>> SignUpParticipant(ParticipantSignUpRequestDto participant)
         {
             throw new NotImplementedException();
         }

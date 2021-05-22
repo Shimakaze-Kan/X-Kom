@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace XKom.Models.DTOs
 {
-    public class UserDto
+    public class ParticipantSignUpRequestDto
     {
         [MaxLength(255)]
         public string Name { get; set; }
         [MaxLength(255), EmailAddress]        
         public string Email { get; set; }
+        public Guid MeetingId { get; set; }
     }
 }

@@ -13,6 +13,6 @@ namespace XKom.Models.DTOs
         public string Description { get; set; }
         public string MeetingType { get; set; }
         public DateTime StartDate { get; set; }
-        public IEnumerable<UserDto> Participants { get; set; } = new List<UserDto>();
+        public IEnumerable<ParticipantSignUpRequestDto> Participants { get; set; } = new List<ParticipantSignUpRequestDto>();
     }
 }
