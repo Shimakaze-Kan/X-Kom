@@ -58,9 +58,27 @@ namespace XKom.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<MessageResponseDto> RemoveMeeting(Guid meetingId)
+        public async Task<MessageResponseDto> RemoveMeeting(Guid meetingId)
         {
-            throw new NotImplementedException();
+            var meetingToRemove = await _xKomContext.Meetings.SingleOrDefaultAsync(x => x.MeetingId == meetingId);
+
+            if (meetingToRemove is not null)
+            {
+                _xKomContext.Remove(meetingToRemove);
+
+                await _xKomContext.SaveChangesAsync();
+
+                return new()
+                {
+                    IsSuccess = true
+                };
+            }
+
+            return new()
+            {
+                ErrorMessage = "The meeting with the given id does not exist",
+                IsSuccess = false
+            };
         }
     }
 }

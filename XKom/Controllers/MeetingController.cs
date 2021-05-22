@@ -29,7 +29,14 @@ namespace XKom.Controllers
         [HttpDelete("RemoveMeeting")]
         public async Task<ActionResult<MessageResponseDto>> RemoveMeeting(Guid meetingId)
         {
-            throw new NotImplementedException();
+            var result = await _meetingRepository.RemoveMeeting(meetingId);
+
+            if(result.IsSuccess is false)
+            {
+                BadRequest(result);
+            }
+
+            return result;
         }
 
         [HttpPost("SignUpParticipant")]
