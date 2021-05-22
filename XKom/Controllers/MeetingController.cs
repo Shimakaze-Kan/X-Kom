@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XKom.Models.DTOs;
+using XKom.Repositories;
 
 namespace XKom.Controllers
 {
@@ -11,6 +12,14 @@ namespace XKom.Controllers
     [ApiController]
     public class MeetingController : Controller
     {
+        private readonly IMeetingRepository _meetingRepository;
+
+        public MeetingController(IMeetingRepository meetingRepository)
+        {
+            _meetingRepository = meetingRepository;
+        }
+
+
         [HttpGet("GetMeetings")]
         public async Task<ActionResult<IEnumerable<MeetingDto>>> GetMeetings()
         {
@@ -32,7 +41,14 @@ namespace XKom.Controllers
         [HttpPost("CreateMeeting")]
         public async Task<ActionResult<MeetingResponseDto>> CreateMeeting(MeetingRequestDto meetingRequest)
         {
-            throw new NotImplementedException();
+            var result = await _meetingRepository.CreateMeeting(meetingRequest);
+
+            if(result.IsSuccess is false)
+            {
+                return BadRequest(result);
+            }
+
+            return result;
         }
     }
 }

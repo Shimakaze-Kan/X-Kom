@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XKom.Models.ModelsDB;
+using XKom.Repositories;
 
 namespace XKom
 {
@@ -37,6 +38,8 @@ namespace XKom
             
             services.AddDbContext<XKomContext>(options
                 => options.UseMySql(Configuration.GetConnectionString("xkomDB"), new MySqlServerVersion(new Version(8, 0, 23))));
+
+            services.AddScoped<IMeetingRepository, MeetingRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
