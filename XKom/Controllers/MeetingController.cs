@@ -44,7 +44,14 @@ namespace XKom.Controllers
         [HttpPost("SignUpParticipant")]
         public async Task<ActionResult<MessageResponseDto>> SignUpParticipant(ParticipantSignUpRequestDto participant)
         {
-            throw new NotImplementedException();
+            var result = await _meetingRepository.SignUpParticipantToMeeting(participant);
+
+            if(result.IsSuccess is false)
+            {
+                return BadRequest(result);
+            }
+
+            return result;
         }
 
         [HttpPost("CreateMeeting")]

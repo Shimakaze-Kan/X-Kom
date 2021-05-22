@@ -14,9 +14,67 @@ namespace XKom.Repositories
         {
         }
 
-        public Task<MessageResponseDto> SignUpParticipantToMeeting(ParticipantSignUpRequestDto participant)
+        public async Task<MessageResponseDto> SignUpParticipantToMeeting(ParticipantSignUpRequestDto participant)
         {
-            throw new NotImplementedException();
+            using var transaction = _xKomContext.Database.BeginTransaction();
+            try
+            {
+                var previousParticipant = await _xKomContext.Participants.SingleOrDefaultAsync(x => x.Name == participant.Name && x.Email == participant.Email);
+
+                if (previousParticipant is null)
+                {
+                    previousParticipant = new Participant()
+                    {
+
+                        Name = participant.Name,
+                        Email = participant.Email,
+                        ParticipantId = Guid.NewGuid()
+                    };
+
+                    await _xKomContext.Participants.AddAsync(previousParticipant);
+                }
+
+                var previousAssigment = await _xKomContext.MeetingsParticipants.SingleOrDefaultAsync(x 
+                    => x.MeetingId == participant.MeetingId && x.ParticipantId == previousParticipant.ParticipantId);
+
+                if (previousAssigment is not null)
+                {
+                    transaction.Rollback();
+                    return new() 
+                    { 
+                        ErrorMessage = "This participant is already signed up for this meeting", 
+                        IsSuccess = false
+                    };
+                }
+
+                await _xKomContext.SaveChangesAsync();
+
+                await _xKomContext.MeetingsParticipants.AddAsync(new() { MeetingId = participant.MeetingId, ParticipantId = previousParticipant.ParticipantId });
+
+                await _xKomContext.SaveChangesAsync();
+
+                var count = _xKomContext.MeetingsParticipants.Count(x => x.MeetingId == participant.MeetingId);
+
+                if (count > 25)
+                {
+                    transaction.Rollback();
+                    return new() 
+                    { 
+                        ErrorMessage = "The maximum number of people per meeting is 25, the number exceeded", 
+                        IsSuccess = false 
+                    };
+                }
+                else
+                {
+                    transaction.Commit();
+                    return new() { IsSuccess = true };
+                }
+            }
+            catch (Exception e)
+            {
+                transaction.Rollback();
+                return new() { ErrorMessage = e.Message, IsSuccess = false };
+            }
         }
 
         public async Task<MeetingResponseDto> CreateMeeting(MeetingRequestDto meetingRequest)
@@ -64,7 +122,7 @@ namespace XKom.Repositories
                     Description = x.Description,
                     MeetingType = x.MeetingTypeNavigation.TypeName,
                     StartDate = x.StartDate,
-                    Participants = x.MeetingsParticipants.Select(x => new ParticipantSignUpRequestDto() { Email = x.Participant.Email, Name = x.Participant.Name })
+                    Participants = x.MeetingsParticipants.Select(x => new ParticipantDto() { Email = x.Participant.Email, Name = x.Participant.Name })
                 })
                 .OrderByDescending(x => x.StartDate)
                 .ToListAsync();
