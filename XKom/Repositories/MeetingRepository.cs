@@ -53,9 +53,21 @@ namespace XKom.Repositories
             }
         }
 
-        public Task<IEnumerable<MeetingDto>> GetMeetings()
+        public async Task<IEnumerable<MeetingDto>> GetMeetings()
         {
-            throw new NotImplementedException();
+            return await _xKomContext.Meetings.Include(x => x.MeetingTypeNavigation)
+                .Include(x => x.MeetingsParticipants)
+                .ThenInclude(x => x.Participant)
+                .Select(x => new MeetingDto()
+                {
+                    Title = x.Title,
+                    Description = x.Description,
+                    MeetingType = x.MeetingTypeNavigation.TypeName,
+                    StartDate = x.StartDate,
+                    Participants = x.MeetingsParticipants.Select(x => new ParticipantSignUpRequestDto() { Email = x.Participant.Email, Name = x.Participant.Name })
+                })
+                .OrderByDescending(x => x.StartDate)
+                .ToListAsync();
         }
 
         public async Task<MessageResponseDto> RemoveMeeting(Guid meetingId)

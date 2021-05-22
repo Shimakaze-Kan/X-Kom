@@ -23,7 +23,9 @@ namespace XKom.Controllers
         [HttpGet("GetMeetings")]
         public async Task<ActionResult<IEnumerable<MeetingDto>>> GetMeetings()
         {
-            throw new NotImplementedException();
+            var result = await _meetingRepository.GetMeetings();
+
+            return Ok(result);
         }
 
         [HttpDelete("RemoveMeeting")]
