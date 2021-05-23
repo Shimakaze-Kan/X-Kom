@@ -19,7 +19,7 @@ namespace XKom.Repositories
             using var transaction = _xKomContext.Database.BeginTransaction();
             try
             {
-                var previousParticipant = await _xKomContext.Participants.SingleOrDefaultAsync(x => x.Name == participant.Name && x.Email == participant.Email);
+                var previousParticipant = await _xKomContext.Participants.SingleOrDefaultAsync(x => x.Email == participant.Email);
 
                 if (previousParticipant is null)
                 {
@@ -32,6 +32,18 @@ namespace XKom.Repositories
                     };
 
                     await _xKomContext.Participants.AddAsync(previousParticipant);
+                }
+                else
+                {
+                    if (previousParticipant.Name != participant.Name)
+                    {
+                        transaction.Rollback();
+                        return new()
+                        {
+                            ErrorMessage = "The email you entered has already been used with a different first name, please enter the correct first name",
+                            IsSuccess = false
+                        };
+                    }
                 }
 
                 var previousAssigment = await _xKomContext.MeetingsParticipants.SingleOrDefaultAsync(x 
