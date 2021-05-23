@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using XKom.Models.ModelsDB;
+﻿using XKom.Models.ModelsDB;
 
 namespace XKom.Repositories
 {

@@ -1,19 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using XKom.Models.ModelsDB;
 using XKom.Repositories;
 
@@ -38,12 +32,13 @@ namespace XKom
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "XKom", Version = "v1" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);                
+                c.IncludeXmlComments(xmlPath);
             });
-            
+
             services.AddDbContext<XKomContext>(options
                 => options.UseMySql(Configuration.GetConnectionString("xkomDB"), new MySqlServerVersion(new Version(8, 0, 23))));
 
+            //Use repository pattern in order to abstract data access layer
             services.AddScoped<IMeetingRepository, MeetingRepository>();
         }
 

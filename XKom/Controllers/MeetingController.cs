@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using XKom.Models.DTOs;
 using XKom.Repositories;
@@ -65,7 +64,7 @@ namespace XKom.Controllers
         {
             var result = await _meetingRepository.RemoveMeeting(meetingId);
 
-            if(result.IsSuccess is false)
+            if (result.IsSuccess is false)
             {
                 BadRequest(result);
             }
@@ -107,7 +106,7 @@ namespace XKom.Controllers
         {
             var result = await _meetingRepository.SignUpParticipantToMeeting(participant);
 
-            if(result.IsSuccess is false)
+            if (result.IsSuccess is false)
             {
                 return BadRequest(result);
             }
@@ -143,7 +142,7 @@ namespace XKom.Controllers
         {
             var result = await _meetingRepository.CreateMeeting(meetingRequest);
 
-            if(result.IsSuccess is false)
+            if (result.IsSuccess is false)
             {
                 return BadRequest(result);
             }

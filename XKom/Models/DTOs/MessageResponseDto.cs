@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace XKom.Models.DTOs
+﻿namespace XKom.Models.DTOs
 {
     public class MessageResponseDto
     {
