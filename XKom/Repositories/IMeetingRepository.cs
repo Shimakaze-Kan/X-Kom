@@ -8,7 +8,7 @@ namespace XKom.Repositories
 {
     public interface IMeetingRepository
     {
-        Task<IEnumerable<MeetingDto>> GetMeetings();
+        Task<IEnumerable<MeetingDto>> GetMeetingsWithParticipants();
         Task<MeetingResponseDto> CreateMeeting(MeetingRequestDto meetingRequest);
         Task<MessageResponseDto> RemoveMeeting(Guid meetingId);
         Task<MessageResponseDto> SignUpParticipantToMeeting(ParticipantSignUpRequestDto participant);

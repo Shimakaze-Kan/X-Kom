@@ -123,13 +123,14 @@ namespace XKom.Repositories
             }
         }
 
-        public async Task<IEnumerable<MeetingDto>> GetMeetings()
+        public async Task<IEnumerable<MeetingDto>> GetMeetingsWithParticipants()
         {
             return await _xKomContext.Meetings.Include(x => x.MeetingTypeNavigation)
                 .Include(x => x.MeetingsParticipants)
                 .ThenInclude(x => x.Participant)
                 .Select(x => new MeetingDto()
                 {
+                    MeetingId = x.MeetingId,
                     Title = x.Title,
                     Description = x.Description,
                     MeetingType = x.MeetingTypeNavigation.TypeName,

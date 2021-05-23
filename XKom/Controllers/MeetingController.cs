@@ -20,10 +20,10 @@ namespace XKom.Controllers
         }
 
 
-        [HttpGet("GetMeetings")]
-        public async Task<ActionResult<IEnumerable<MeetingDto>>> GetMeetings()
+        [HttpGet("GetMeetingsWithParticipants")]
+        public async Task<ActionResult<IEnumerable<MeetingDto>>> GetMeetingsWithParticipants()
         {
-            var result = await _meetingRepository.GetMeetings();
+            var result = await _meetingRepository.GetMeetingsWithParticipants();
 
             return Ok(result);
         }
