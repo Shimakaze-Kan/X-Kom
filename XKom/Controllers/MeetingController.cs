@@ -21,9 +21,17 @@ namespace XKom.Controllers
 
 
         [HttpGet("GetMeetingsWithParticipants")]
-        public async Task<ActionResult<IEnumerable<MeetingDto>>> GetMeetingsWithParticipants()
+        public async Task<ActionResult<IEnumerable<MeetingWithParticipantsDto>>> GetMeetingsWithParticipants()
         {
             var result = await _meetingRepository.GetMeetingsWithParticipants();
+
+            return Ok(result);
+        }
+
+        [HttpGet("GetMeetings")]
+        public async Task<ActionResult<IEnumerable<MeetingDto>>> GetMeetings()
+        {
+            var result = await _meetingRepository.GetMeetings();
 
             return Ok(result);
         }

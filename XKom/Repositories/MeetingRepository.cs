@@ -123,12 +123,12 @@ namespace XKom.Repositories
             }
         }
 
-        public async Task<IEnumerable<MeetingDto>> GetMeetingsWithParticipants()
+        public async Task<IEnumerable<MeetingWithParticipantsDto>> GetMeetingsWithParticipants()
         {
             return await _xKomContext.Meetings.Include(x => x.MeetingTypeNavigation)
                 .Include(x => x.MeetingsParticipants)
                 .ThenInclude(x => x.Participant)
-                .Select(x => new MeetingDto()
+                .Select(x => new MeetingWithParticipantsDto()
                 {
                     MeetingId = x.MeetingId,
                     Title = x.Title,
@@ -136,6 +136,21 @@ namespace XKom.Repositories
                     MeetingType = x.MeetingTypeNavigation.TypeName,
                     StartDate = x.StartDate,
                     Participants = x.MeetingsParticipants.Select(x => new ParticipantDto() { Email = x.Participant.Email, Name = x.Participant.Name })
+                })
+                .OrderByDescending(x => x.StartDate)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MeetingDto>> GetMeetings()
+        {
+            return await _xKomContext.Meetings.Include(x => x.MeetingTypeNavigation)
+                .Select(x => new MeetingDto()
+                {
+                    MeetingId = x.MeetingId,
+                    Title = x.Title,
+                    Description = x.Description,
+                    MeetingType = x.MeetingTypeNavigation.TypeName,
+                    StartDate = x.StartDate
                 })
                 .OrderByDescending(x => x.StartDate)
                 .ToListAsync();
